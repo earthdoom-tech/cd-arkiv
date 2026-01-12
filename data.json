@@ -8,5 +8,15 @@
     "listenWhen": "Kväll, bakgrund, låg volym",
     "notes": "Skramlig och charmig. Min CD känns mindre vass i diskanten än streaming.",
     "discogs": "https://www.discogs.com/"
+  },
+  {
+    "artist": "Metallica",
+    "album": "Master of Puppets",
+    "year": 1986,
+    "rating": 5,
+    "tags": ["thrash", "klassiker", "energi"],
+    "listenWhen": "Hög volym, fokus, bilkörning",
+    "notes": "Tajt, aggressiv och ändå tydlig. Funkar alltid.",
+    "discogs": "https://www.discogs.com/"
   }
 ]
