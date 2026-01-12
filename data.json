@@ -20,13 +20,33 @@
     "discogs": "https://www.discogs.com/"
   },
   {
-    "artist": "The Jimi Hendrix Experience",
-    "album": "Are You Experienced?",
-    "year": 1967,
-    "rating": 5,
-    "tags": ["klassiker", "energi"],
-    "listenWhen": "Hög volym, fokus, bilkörning",
-    "notes": "Tajt, aggressiv och ändå tydlig. Funkar alltid.",
-    "discogs": "https://www.discogs.com/release/371279-The-Jimi-Hendrix-Experience-Are-You-Experienced"
-  }
+  "artist": "The Jimi Hendrix Experience",
+  "album": "Are You Experienced",
+  "year": 1967,
+  "rating": 5,
+  "tags": ["psychedelic rock", "blues rock", "60-tal", "classic rock", "gitarrfokus", "experimentell"],
+  "listenWhen": "Fokus, kväll, lite högre volym",
+  "notes": "Banbrytande ljudbild och gitarrspel. Fortfarande fräsch och intensiv.",
+  "discogs": "https://www.discogs.com/release/371279-The-Jimi-Hendrix-Experience-Are-You-Experienced"
+},
+  {
+  "artist": "Kyuss",
+  "album": "Blues for the Red Sun",
+  "year": 1992,
+  "rating": 5,
+  "tags": ["stoner rock", "desert rock", "tungt", "90-tal", "riffbaserat", "rå energi"],
+  "listenWhen": "Hög volym, sent, fokus eller bilkörning",
+  "notes": "Tung, torr och hypnotisk. Klassiker inom desert/stoner.",
+  "discogs": "https://www.discogs.com/release/6951161-Kyuss-Blues-For-The-Red-Sun"
+},
+  {
+  "artist": "Kula Shaker",
+  "album": "K",
+  "year": 1996,
+  "rating": 4,
+  "tags": ["psychedelic rock", "britpop", "90-tal", "melodiskt", "raga rock", "chill"],
+  "listenWhen": "Dagtid, bakgrund eller lätt fokus",
+  "notes": "Melodisk och färgstark. Psykedelisk poprock med tydlig identitet.",
+  "discogs": "https://www.discogs.com/release/6901243-Kula-Shaker-K"
+}
 ]
