@@ -18,5 +18,15 @@
     "listenWhen": "Hög volym, fokus, bilkörning",
     "notes": "Tajt, aggressiv och ändå tydlig. Funkar alltid.",
     "discogs": "https://www.discogs.com/"
+  },
+  {
+    "artist": "The Jimi Hendrix Experience",
+    "album": "Are You Experienced?",
+    "year": 1967,
+    "rating": 5,
+    "tags": ["klassiker", "energi"],
+    "listenWhen": "Hög volym, fokus, bilkörning",
+    "notes": "Tajt, aggressiv och ändå tydlig. Funkar alltid.",
+    "discogs": "https://www.discogs.com/release/371279-The-Jimi-Hendrix-Experience-Are-You-Experienced"
   }
 ]
