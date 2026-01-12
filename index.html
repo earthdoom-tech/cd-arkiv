@@ -68,83 +68,113 @@
     </div>
   </main>
 
-  <script>
-    const els = {
-      q: document.getElementById("q"),
-      minRating: document.getElementById("minRating"),
-      list: document.getElementById("list"),
-      status: document.getElementById("status"),
-      tagChips: document.getElementById("tagChips"),
-      randomBtn: document.getElementById("randomBtn"),
-    };
+ <script>
+  const els = {
+    q: document.getElementById("q"),
+    minRating: document.getElementById("minRating"),
+    list: document.getElementById("list"),
+    status: document.getElementById("status"),
+    tagChips: document.getElementById("tagChips"),
+    randomBtn: document.getElementById("randomBtn"),
+  };
 
-    let data = [];
-    let activeTag = "";
+  let data = [];
+  let activeTag = "";
 
-    const norm = (s) => (s || "").toString().toLowerCase().trim();
+  const norm = (s) => (s || "").toString().toLowerCase().trim();
 
-    function stars(n){
-      return "★".repeat(n) + "☆".repeat(5 - n);
-    }
+  function stars(n){
+    n = Number(n) || 0;
+    return "★".repeat(n) + "☆".repeat(Math.max(0, 5 - n));
+  }
 
-    function render(){
-      const q = norm(els.q.value);
-      const min = parseInt(els.minRating.value, 10);
-      const items = data.filter(i => {
-        if ((i.rating || 0) < min) return false;
-        if (activeTag && !(i.tags || []).includes(activeTag)) return false;
-        if (!q) return true;
-        const hay = norm([i.artist,i.album,i.notes,(i.tags||[]).join(" ")].join(" "));
-        return hay.includes(q);
+  function buildTags(){
+    const set = new Set();
+    data.forEach(i => (i.tags || []).forEach(t => set.add(t)));
+    const tags = Array.from(set).sort((a,b) => a.localeCompare(b, "sv"));
+
+    els.tagChips.innerHTML =
+      `<span class="chip" data-tag="" data-active="true">Alla</span>` +
+      tags.map(t => `<span class="chip" data-tag="${t}" data-active="false">${t}</span>`).join("");
+
+    els.tagChips.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        activeTag = chip.getAttribute("data-tag") || "";
+        els.tagChips.querySelectorAll(".chip").forEach(c => c.dataset.active = "false");
+        chip.dataset.active = "true";
+        render();
       });
+    });
+  }
 
-      els.list.innerHTML = items.map(i => `
-        <div class="card">
-          <div class="name">${i.artist} – ${i.album}</div>
-          <div class="meta">${stars(i.rating || 0)} ${i.year || ""}</div>
-          ${i.notes ? `<div class="notes">${i.notes}</div>` : ""}
-          ${i.listenWhen ? `<div class="when"><strong>Lyssna när:</strong> ${i.listenWhen}</div>` : ""}
-          <div class="tags">${(i.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
-          ${i.discogs ? `<a class="link" href="${i.discogs}" target="_blank">Discogs</a>` : ""}
-        </div>
-      `).join("");
+  function filtered(){
+    const q = norm(els.q.value);
+    const min = parseInt(els.minRating.value, 10) || 0;
 
-      els.status.textContent = `${items.length} träffar`;
-    }
+    return data.filter(i => {
+      if ((i.rating || 0) < min) return false;
+      if (activeTag && !(i.tags || []).includes(activeTag)) return false;
 
-    function buildTags(){
-      const tags = [...new Set(data.flatMap(i => i.tags || []))].sort();
-      els.tagChips.innerHTML =
-        `<span class="chip" data-tag="">Alla</span>` +
-        tags.map(t => `<span class="chip" data-tag="${t}">${t}</span>`).join("");
+      if (!q) return true;
+      const hay = norm([i.artist, i.album, i.year, i.listenWhen, i.notes, (i.tags || []).join(" ")].join(" "));
+      return hay.includes(q);
+    });
+  }
 
-      els.tagChips.querySelectorAll(".chip").forEach(c => {
-        c.onclick = () => {
-          activeTag = c.dataset.tag || "";
-          render();
-        };
-      });
-    }
+  function render(){
+    const items = filtered();
 
-    async function init(){
+    els.list.innerHTML = items.map(i => `
+      <div class="card">
+        <div class="name">${i.artist} – ${i.album}</div>
+        <div class="meta">${stars(i.rating)} ${i.year ? "• " + i.year : ""}</div>
+        ${i.notes ? `<div class="notes">${i.notes}</div>` : ""}
+        ${i.listenWhen ? `<div class="when"><strong>Lyssna när:</strong> ${i.listenWhen}</div>` : ""}
+        <div class="tags">${(i.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+        ${i.discogs ? `<a class="link" href="${i.discogs}" target="_blank" rel="noopener">Discogs</a>` : ""}
+      </div>
+    `).join("");
+
+    els.status.textContent = `${items.length} skivor`;
+  }
+
+  function pickRandom(){
+    if (!data.length) return;
+    const i = data[Math.floor(Math.random() * data.length)];
+    els.q.value = "";
+    els.minRating.value = "0";
+    activeTag = "";
+    buildTags();
+    els.list.innerHTML = `
+      <div class="card">
+        <div class="name">${i.artist} – ${i.album}</div>
+        <div class="meta">${stars(i.rating)} ${i.year ? "• " + i.year : ""}</div>
+        ${i.notes ? `<div class="notes">${i.notes}</div>` : ""}
+        ${i.listenWhen ? `<div class="when"><strong>Lyssna när:</strong> ${i.listenWhen}</div>` : ""}
+        <div class="tags">${(i.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+        ${i.discogs ? `<a class="link" href="${i.discogs}" target="_blank" rel="noopener">Discogs</a>` : ""}
+      </div>
+    `;
+    els.status.textContent = "🎲 Slumpad skiva";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function init(){
+    try {
       const res = await fetch("data.json", { cache: "no-store" });
       data = await res.json();
+
       buildTags();
       render();
 
-      els.q.oninput = render;
-      els.minRating.onchange = render;
-      els.randomBtn.onclick = () => {
-        const i = data[Math.floor(Math.random() * data.length)];
-        els.q.value = "";
-        els.minRating.value = 0;
-        activeTag = "";
-        els.list.innerHTML = "";
-        els.list.innerHTML = `
-          <div class="card">
-            <div class="name">${i.artist} – ${i.album}</div>
-            <div class="meta">${stars(i.rating || 0)} ${i.year || ""}</div>
-            ${i.notes ? `<div class="notes">${i.notes}</div>` : ""}
-            ${i.listenWhen ? `<div class="when"><strong>Lyssna när:</strong> ${i.listenWhen}</div>` : ""}
-            <div class="tags">${(i.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
-            ${i.d
+      els.q.addEventListener("input", render);
+      els.minRating.addEventListener("change", render);
+      els.randomBtn.addEventListener("click", pickRandom);
+    } catch (e) {
+      console.error("Init-fel:", e);
+      els.status.textContent = "Fel: kunde inte läsa data.json";
+    }
+  }
+
+  init();
+</script>
